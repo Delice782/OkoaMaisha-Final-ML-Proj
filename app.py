@@ -54,9 +54,6 @@
 #     else:
 #         st.info("Standard Stay: Routine resource allocation.")
 
-
-
-
 """
 OkoaMaisha: Clinical Length of Stay Predictor
 Streamlit Web Application - Complete Version
