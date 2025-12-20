@@ -52,7 +52,7 @@
 #     if prediction[0] > 7:
 #         st.warning("High Resource Intensity: Consider early discharge planning.")
 #     else:
-#         st.info("Standard Stay: Routine resource allocation.")
+#         st.info("Standard Stay: Routine resource allocation.") 
 
 """
 OkoaMaisha: Clinical Length of Stay Predictor
