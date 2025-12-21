@@ -4688,6 +4688,942 @@
 
 # VERSION 10
 
+# """
+# OkoaMaisha: Clinical Length of Stay Predictor - Version 2.1
+# Professional Streamlit Web Application - Enhanced Edition
+# """
+
+# import streamlit as st
+# import pandas as pd
+# import numpy as np
+# import joblib
+# import plotly.graph_objects as go
+# import plotly.express as px
+# from datetime import datetime
+
+# # Page config
+# st.set_page_config(
+#     page_title="OkoaMaisha | LoS Predictor",
+#     page_icon="🏥",
+#     layout="wide",
+#     initial_sidebar_state="expanded"
+# )
+
+# # Enhanced Custom CSS with better colors
+# st.markdown("""
+# <style>
+# .main {padding: 0rem 1rem;}
+
+# .main-header {
+#     background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #06b6d4 100%);
+#     padding: 2.5rem; 
+#     border-radius: 15px; 
+#     color: white;
+#     margin-bottom: 2rem; 
+#     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+# }
+
+# .metric-card {
+#     background: white; 
+#     padding: 2rem; 
+#     border-radius: 12px;
+#     border-left: 5px solid #3b82f6; 
+#     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+#     transition: transform 0.2s, box-shadow 0.2s;
+#     height: 100%;
+# }
+
+# .metric-card:hover {
+#     transform: translateY(-5px);
+#     box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+# }
+
+# .metric-card h3 {
+#     color: #3b82f6;
+#     font-size: 2.5rem;
+#     margin: 0;
+#     font-weight: 700;
+# }
+
+# .metric-card p {
+#     margin: 0.5rem 0 0 0;
+#     font-weight: 600;
+#     color: #1e293b;
+#     font-size: 1.1rem;
+# }
+
+# .metric-card .subtext {
+#     font-size: 0.85rem;
+#     color: #64748b;
+#     font-weight: 400;
+#     margin-top: 0.25rem;
+# }
+
+# .prediction-box {
+#     background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+#     padding: 3rem; 
+#     border-radius: 20px; 
+#     color: white;
+#     text-align: center; 
+#     box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
+#     margin: 2rem 0;
+# }
+
+# .section-header {
+#     font-size: 1.8rem; 
+#     font-weight: 700; 
+#     color: #1e3a8a;
+#     margin: 2.5rem 0 1.5rem 0; 
+#     padding-bottom: 0.75rem;
+#     border-bottom: 3px solid #3b82f6;
+# }
+
+# .capability-card {
+#     background: white;
+#     padding: 2rem;
+#     border-radius: 12px;
+#     border-left: 5px solid #3b82f6;
+#     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+#     margin-bottom: 1rem;
+#     height: 100%;
+# }
+
+# .capability-card h4 {
+#     color: #3b82f6;
+#     margin-top: 0;
+#     font-size: 1.3rem;
+# }
+
+# .capability-card ul {
+#     color: #475569;
+#     line-height: 2;
+#     font-size: 1rem;
+# }
+
+# .step-card {
+#     background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+#     padding: 1.5rem;
+#     border-radius: 10px;
+#     border: 2px solid #3b82f6;
+#     text-align: center;
+#     height: 100%;
+#     transition: transform 0.2s;
+# }
+
+# .step-card:hover {
+#     transform: translateY(-5px);
+# }
+
+# .step-number {
+#     background: #3b82f6;
+#     color: white;
+#     width: 40px;
+#     height: 40px;
+#     border-radius: 50%;
+#     display: inline-flex;
+#     align-items: center;
+#     justify-content: center;
+#     font-weight: 700;
+#     font-size: 1.2rem;
+#     margin-bottom: 1rem;
+# }
+
+# .info-tooltip {
+#     background: #eff6ff;
+#     border-left: 4px solid #3b82f6;
+#     padding: 1rem;
+#     border-radius: 8px;
+#     margin: 1rem 0;
+#     font-size: 0.9rem;
+#     color: #1e40af;
+# }
+
+# #MainMenu {visibility: hidden;} 
+# footer {visibility: hidden;}
+
+# /* Dashboard metric explanation */
+# .metric-explanation {
+#     background: #f8fafc;
+#     padding: 1.5rem;
+#     border-radius: 10px;
+#     margin-top: 1rem;
+#     border: 1px solid #e2e8f0;
+# }
+
+# .metric-explanation h4 {
+#     color: #1e3a8a;
+#     margin-top: 0;
+#     font-size: 1.1rem;
+# }
+
+# .metric-explanation p {
+#     color: #475569;
+#     line-height: 1.6;
+#     margin: 0.5rem 0;
+# }
+# </style>
+# """, unsafe_allow_html=True)
+
+# # Load model
+# @st.cache_resource
+# def load_model_artifacts():
+#     model = joblib.load('best_model.pkl')
+#     scaler = joblib.load('scaler.pkl')
+#     feature_names = joblib.load('feature_names.pkl')
+#     metadata = joblib.load('model_metadata.pkl')
+#     return model, scaler, feature_names, metadata
+
+# model, scaler, feature_names, metadata = load_model_artifacts()
+
+# comorbidity_cols = metadata.get('comorbidity_cols', [
+#     'dialysisrenalendstage', 'asthma', 'irondef', 'pneum',
+#     'substancedependence', 'psychologicaldisordermajor',
+#     'depress', 'psychother', 'fibrosisandother', 'malnutrition', 'hemo'
+# ])
+
+# # Helper function
+# def engineer_features(input_dict):
+#     df = pd.DataFrame(0, index=[0], columns=feature_names)
+    
+#     for key in ['gender', 'rcount', 'bmi', 'pulse', 'respiration', 'hematocrit',
+#                 'neutrophils', 'sodium', 'glucose', 'bloodureanitro', 'creatinine',
+#                 'secondarydiagnosisnonicd9', 'admission_month', 'admission_dayofweek',
+#                 'admission_quarter']:
+#         if key in input_dict:
+#             df[key] = input_dict[key]
+    
+#     for c in comorbidity_cols:
+#         df[c] = int(input_dict.get(c, 0))
+    
+#     df['total_comorbidities'] = sum([input_dict.get(c, 0) for c in comorbidity_cols])
+#     df['high_glucose'] = int(input_dict['glucose'] > 140)
+#     df['low_sodium'] = int(input_dict['sodium'] < 135)
+#     df['high_creatinine'] = int(input_dict['creatinine'] > 1.3)
+#     df['low_bmi'] = int(input_dict['bmi'] < 18.5)
+#     df['high_bmi'] = int(input_dict['bmi'] > 30)
+#     df['abnormal_vitals'] = (
+#         int((input_dict['pulse'] < 60) or (input_dict['pulse'] > 100)) +
+#         int((input_dict['respiration'] < 12) or (input_dict['respiration'] > 20))
+#     )
+    
+#     for fac in ['A', 'B', 'C', 'D', 'E']:
+#         col_name = f'facility_{fac}'
+#         if col_name in feature_names:
+#             df[col_name] = int(input_dict['facility'] == fac)
+    
+#     return df
+
+# # Sidebar
+# with st.sidebar:
+#     st.image("https://img.icons8.com/fluency/96/hospital.png", width=80)
+#     st.title("OkoaMaisha")
+#     st.caption("AI-Powered Hospital Resource Optimizer")
+    
+#     page = st.radio("", ["🏠 Home", "📊 Dashboard", "🔮 Predict", "📖 About"])
+    
+#     st.markdown("---")
+#     st.markdown("### 🎯 Model Stats")
+#     st.metric("Accuracy", f"{metadata['test_r2']:.1%}")
+#     st.metric("Avg Error", f"±{metadata['test_mae']:.2f} days")
+    
+#     # Format training date properly
+#     try:
+#         training_date = metadata['training_date'][:10]
+#         st.caption(f"📅 Updated: {training_date}")
+#     except:
+#         st.caption("📅 Model v2.1")
+
+# # ============================================
+# # HOME PAGE - ENHANCED
+# # ============================================
+# if page == "🏠 Home":
+#     st.markdown("""
+#     <div class='main-header'>
+#         <h1 style='font-size: 2.8rem; margin: 0;'>🏥 OkoaMaisha</h1>
+#         <p style='font-size: 1.3rem; margin-top: 1rem; font-weight: 500;'>
+#             AI-Powered Hospital Patient Length of Stay Prediction
+#         </p>
+#         <p style='font-size: 1.1rem; opacity: 0.95; margin-top: 0.5rem;'>
+#             Optimize beds • Plan resources • Improve patient care
+#         </p>
+#     </div>
+#     """, unsafe_allow_html=True)
+    
+#     # Enhanced metric cards with proper labels
+#     col1, col2, col3, col4 = st.columns(4)
+#     with col1:
+#         st.markdown("""
+#         <div class='metric-card'>
+#             <h3>97.2%</h3>
+#             <p>Accuracy</p>
+#             <div class='subtext'>Model precision score</div>
+#         </div>
+#         """, unsafe_allow_html=True)
+#     with col2:
+#         st.markdown("""
+#         <div class='metric-card'>
+#             <h3>±0.31</h3>
+#             <p>Days Error</p>
+#             <div class='subtext'>Average prediction variance</div>
+#         </div>
+#         """, unsafe_allow_html=True)
+#     with col3:
+#         st.markdown("""
+#         <div class='metric-card'>
+#             <h3>98%</h3>
+#             <p>Long-Stay Recall</p>
+#             <div class='subtext'>High-risk detection rate</div>
+#         </div>
+#         """, unsafe_allow_html=True)
+#     with col4:
+#         st.markdown("""
+#         <div class='metric-card'>
+#             <h3>100K</h3>
+#             <p>Training Set</p>
+#             <div class='subtext'>Validated patient records</div>
+#         </div>
+#         """, unsafe_allow_html=True)
+    
+#     st.markdown("<div class='section-header'>✨ Key Capabilities</div>", unsafe_allow_html=True)
+    
+#     col1, col2 = st.columns(2)
+#     with col1:
+#         st.markdown("""
+#         <div class='capability-card'>
+#             <h4>🎯 Accurate Predictions</h4>
+#             <ul>
+#                 <li><strong>±0.31 day precision</strong> - Industry-leading accuracy</li>
+#                 <li><strong>97.2% R² score</strong> - Explains 97% of variance</li>
+#                 <li><strong>42 clinical features</strong> - Comprehensive analysis</li>
+#             </ul>
+#             <h4 style='margin-top: 1.5rem;'>📊 Resource Optimization</h4>
+#             <ul>
+#                 <li><strong>Proactive bed management</strong> - Prevent shortages</li>
+#                 <li><strong>Staff allocation</strong> - Optimize scheduling</li>
+#                 <li><strong>Supply forecasting</strong> - Reduce waste</li>
+#             </ul>
+#         </div>
+#         """, unsafe_allow_html=True)
+    
+#     with col2:
+#         st.markdown("""
+#         <div class='capability-card' style='border-left-color: #10b981;'>
+#             <h4 style='color: #10b981;'>🏥 Clinical Impact</h4>
+#             <ul>
+#                 <li><strong>98% detection rate</strong> - Catches long-stay patients</li>
+#                 <li><strong>Prevents bed crises</strong> - Early warning system</li>
+#                 <li><strong>Discharge planning</strong> - Start day one</li>
+#             </ul>
+#             <h4 style='margin-top: 1.5rem; color: #10b981;'>🔒 Safe & Compliant</h4>
+#             <ul>
+#                 <li><strong>HIPAA-compliant</strong> - Privacy-first design</li>
+#                 <li><strong>Decision support</strong> - Augments clinicians</li>
+#                 <li><strong>Human oversight</strong> - Always required</li>
+#             </ul>
+#         </div>
+#         """, unsafe_allow_html=True)
+    
+#     st.markdown("<div class='section-header'>🚀 How It Works</div>", unsafe_allow_html=True)
+    
+#     col1, col2, col3, col4 = st.columns(4)
+#     with col1:
+#         st.markdown("""
+#         <div class='step-card'>
+#             <div class='step-number'>1</div>
+#             <h4 style='color: #1e3a8a; margin: 0.5rem 0;'>Input</h4>
+#             <p style='color: #475569; font-size: 0.95rem;'>Enter patient demographics, vitals, and medical history</p>
+#         </div>
+#         """, unsafe_allow_html=True)
+#     with col2:
+#         st.markdown("""
+#         <div class='step-card'>
+#             <div class='step-number'>2</div>
+#             <h4 style='color: #1e3a8a; margin: 0.5rem 0;'>Analyze</h4>
+#             <p style='color: #475569; font-size: 0.95rem;'>AI processes 42 clinical features instantly</p>
+#         </div>
+#         """, unsafe_allow_html=True)
+#     with col3:
+#         st.markdown("""
+#         <div class='step-card'>
+#             <div class='step-number'>3</div>
+#             <h4 style='color: #1e3a8a; margin: 0.5rem 0;'>Predict</h4>
+#             <p style='color: #475569; font-size: 0.95rem;'>Get precise length of stay estimate</p>
+#         </div>
+#         """, unsafe_allow_html=True)
+#     with col4:
+#         st.markdown("""
+#         <div class='step-card'>
+#             <div class='step-number'>4</div>
+#             <h4 style='color: #1e3a8a; margin: 0.5rem 0;'>Plan</h4>
+#             <p style='color: #475569; font-size: 0.95rem;'>Receive actionable resource recommendations</p>
+#         </div>
+#         """, unsafe_allow_html=True)
+    
+#     # Call to action
+#     st.markdown("<br>", unsafe_allow_html=True)
+#     st.info("👉 **Ready to get started?** Use the sidebar menu to navigate to the **🔮 Predict** page and enter patient data.")
+#     st.markdown("<br>", unsafe_allow_html=True)
+
+# # ============================================
+# # DASHBOARD PAGE - ENHANCED WITH EXPLANATIONS
+# # ============================================
+# elif page == "📊 Dashboard":
+#     st.title("📊 Model Performance Dashboard")
+    
+#     col1, col2, col3, col4 = st.columns(4)
+#     with col1:
+#         st.metric("R² Score", f"{metadata['test_r2']:.4f}")
+#     with col2:
+#         st.metric("MAE", f"{metadata['test_mae']:.2f} days")
+#     with col3:
+#         st.metric("RMSE", f"{metadata.get('test_rmse', 0.40):.2f} days")
+#     with col4:
+#         st.metric("Training Size", "80,000")
+    
+#     # METRIC EXPLANATIONS - Using Streamlit native components instead of HTML
+#     st.markdown("---")
+    
+#     # Create a container with custom styling
+#     with st.container():
+#         st.markdown("### 📚 Understanding the Metrics")
+        
+#         # Use Streamlit's info box for the explanation
+#         st.info("""
+#         **R² Score (0.9721):**  
+#         Explains how much of the variation in length of stay our model predicts. 97.21% means the model is highly accurate - only 2.79% of variation is unexplained.
+        
+#         **MAE - Mean Absolute Error (0.31 days):**  
+#         On average, our predictions are off by just 7.4 hours. This means if we predict 5 days, the actual stay is typically between 4.7-5.3 days.
+        
+#         **RMSE - Root Mean Squared Error (0.40 days):**  
+#         Similar to MAE but penalizes larger errors more heavily. A low RMSE means we rarely make big mistakes.
+#         """)
+        
+#         # Bottom line in success box
+#         st.success("""
+#         **💡 Bottom Line:**  
+#         This model is exceptionally accurate for hospital planning. Traditional methods have 30-50% error rates; we're at 3%.
+#         """)
+    
+#     st.markdown("---")
+    
+#     st.markdown("### 📈 Model Comparison")
+    
+#     comparison_data = {
+#         'Model': ['Gradient Boosting', 'XGBoost', 'LightGBM', 'Random Forest'],
+#         'R²': [0.9721, 0.9701, 0.9693, 0.9336],
+#         'MAE': [0.31, 0.31, 0.31, 0.40]
+#     }
+#     df_comp = pd.DataFrame(comparison_data)
+    
+#     col1, col2 = st.columns(2)
+#     with col1:
+#         fig = px.bar(df_comp, x='Model', y='R²', title='Accuracy Comparison (Higher is Better)',
+#                     color='R²', color_continuous_scale='Blues')
+#         fig.update_layout(yaxis_range=[0.92, 0.98])
+#         st.plotly_chart(fig, use_container_width=True)
+    
+#     with col2:
+#         fig = px.bar(df_comp, x='Model', y='MAE', title='Error Comparison (Lower is Better)',
+#                     color='MAE', color_continuous_scale='Reds_r')
+#         st.plotly_chart(fig, use_container_width=True)
+    
+#     st.markdown("### 🔍 Feature Importance")
+    
+#     importance_data = {
+#         'Feature': ['Readmissions', 'Comorbidities', 'Hematocrit', 'BUN', 'Sodium'],
+#         'Importance': [0.579, 0.217, 0.036, 0.021, 0.018]
+#     }
+#     df_imp = pd.DataFrame(importance_data)
+    
+#     fig = px.bar(df_imp, x='Importance', y='Feature', orientation='h',
+#                 title='Top 5 Predictors of Length of Stay', color='Importance',
+#                 color_continuous_scale='Viridis')
+#     st.plotly_chart(fig, use_container_width=True)
+    
+#     col1, col2 = st.columns(2)
+#     with col1:
+#         st.markdown("""
+#         <div class='capability-card'>
+#             <h4>💡 Clinical Insights</h4>
+#             <ul>
+#                 <li><strong>Readmissions dominate:</strong> 57.9% of prediction weight</li>
+#                 <li><strong>Comorbidities matter:</strong> 21.7% influence</li>
+#                 <li><strong>Together:</strong> ~80% of the model's decision</li>
+#                 <li><strong>Takeaway:</strong> History predicts future better than current vitals</li>
+#             </ul>
+#         </div>
+#         """, unsafe_allow_html=True)
+    
+#     with col2:
+#         st.markdown("""
+#         <div class='capability-card' style='border-left-color: #10b981;'>
+#             <h4 style='color: #10b981;'>🎯 Long-Stay Performance</h4>
+#             <ul>
+#                 <li><strong>Accuracy:</strong> 97% for extended stays</li>
+#                 <li><strong>Recall:</strong> 98% detection rate (1,682/1,713)</li>
+#                 <li><strong>Missed cases:</strong> Only 31 patients</li>
+#                 <li><strong>Impact:</strong> Prevents bed shortages effectively</li>
+#             </ul>
+#         </div>
+#         """, unsafe_allow_html=True)
+
+# # ============================================
+# # PREDICTION PAGE
+# # ============================================
+# elif page == "🔮 Predict":
+#     st.title("🔮 Length of Stay Prediction")
+#     st.caption("Enter patient information below to generate a prediction")
+    
+#     tab1, tab2, tab3, tab4 = st.tabs(["👤 Demographics", "🩺 History", "💉 Vitals & Labs", "🏥 Admission"])
+    
+#     # Set defaults - removed sample patient functionality
+    
+#     with tab1:
+#         col1, col2, col3 = st.columns(3)
+#         with col1:
+#             gender = st.selectbox("Gender", ["Female", "Male"])
+#             gender_encoded = 1 if gender == "Male" else 0
+#         with col2:
+#             rcount = st.slider("Readmissions (past 180d)", 0, 5, 0)
+#         with col3:
+#             bmi = st.number_input("BMI", 10.0, 60.0, 25.0, 0.1)
+    
+#     with tab2:
+#         st.caption("Select all conditions that apply:")
+#         col1, col2, col3 = st.columns(3)
+        
+#         with col1:
+#             dialysisrenalendstage = st.checkbox("Dialysis/Renal")
+#             hemo = st.checkbox("Hemoglobin Disorder")
+#             asthma = st.checkbox("Asthma")
+#             pneum = st.checkbox("Pneumonia")
+        
+#         with col2:
+#             irondef = st.checkbox("Iron Deficiency")
+#             malnutrition = st.checkbox("Malnutrition")
+#             fibrosisandother = st.checkbox("Fibrosis")
+        
+#         with col3:
+#             psychologicaldisordermajor = st.checkbox("Major Psych Disorder")
+#             depress = st.checkbox("Depression")
+#             psychother = st.checkbox("Other Psych")
+#             substancedependence = st.checkbox("Substance Dependence")
+    
+#     with tab3:
+#         col1, col2 = st.columns(2)
+#         with col1:
+#             st.markdown("**Vitals**")
+#             pulse = st.number_input("Pulse (bpm)", 30, 200, 75)
+#             respiration = st.number_input("Respiration (/min)", 5.0, 60.0, 16.0)
+#             hematocrit = st.number_input("Hematocrit (%)", 20.0, 60.0, 40.0)
+#             neutrophils = st.number_input("Neutrophils (×10³/µL)", 0.0, 20.0, 4.0)
+        
+#         with col2:
+#             st.markdown("**Labs**")
+#             glucose = st.number_input("Glucose (mg/dL)", 50.0, 400.0, 100.0)
+#             sodium = st.number_input("Sodium (mEq/L)", 120.0, 160.0, 140.0)
+#             creatinine = st.number_input("Creatinine (mg/dL)", 0.3, 10.0, 1.0)
+#             bloodureanitro = st.number_input("BUN (mg/dL)", 5.0, 100.0, 12.0)
+    
+#     with tab4:
+#         col1, col2, col3 = st.columns(3)
+#         with col1:
+#             facility = st.selectbox("Facility", ["A", "B", "C", "D", "E"])
+#         with col2:
+#             admission_month = st.selectbox("Month", list(range(1, 13)))
+#         with col3:
+#             admission_dayofweek_str = st.selectbox("Day", ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"])
+#             day_map = {"Mon": 0, "Tue": 1, "Wed": 2, "Thu": 3, "Fri": 4, "Sat": 5, "Sun": 6}
+#             admission_dayofweek = day_map[admission_dayofweek_str]
+        
+#         admission_quarter = (admission_month - 1) // 3 + 1
+#         secondarydiagnosisnonicd9 = st.slider("Secondary Diagnoses", 0, 10, 1)
+    
+#     st.markdown("---")
+    
+#     if st.button("🚀 Predict Length of Stay", type="primary", use_container_width=True):
+#         with st.spinner("🔮 Analyzing patient data..."):
+#             input_dict = {
+#                 'gender': gender_encoded, 'rcount': rcount, 'bmi': bmi,
+#                 'pulse': pulse, 'respiration': respiration, 'hematocrit': hematocrit,
+#                 'neutrophils': neutrophils, 'glucose': glucose, 'sodium': sodium,
+#                 'creatinine': creatinine, 'bloodureanitro': bloodureanitro,
+#                 'secondarydiagnosisnonicd9': secondarydiagnosisnonicd9,
+#                 'admission_month': admission_month, 'admission_dayofweek': admission_dayofweek,
+#                 'admission_quarter': admission_quarter, 'facility': facility,
+#                 'dialysisrenalendstage': dialysisrenalendstage, 'asthma': asthma,
+#                 'irondef': irondef, 'pneum': pneum, 'substancedependence': substancedependence,
+#                 'psychologicaldisordermajor': psychologicaldisordermajor, 'depress': depress,
+#                 'psychother': psychother, 'fibrosisandother': fibrosisandother,
+#                 'malnutrition': malnutrition, 'hemo': hemo
+#             }
+            
+#             input_df = engineer_features(input_dict)
+#             input_scaled = scaler.transform(input_df)
+#             prediction = model.predict(input_scaled)[0]
+            
+#             st.markdown(f"""
+#             <div class='prediction-box'>
+#                 <h1 style='font-size: 3.5rem; margin: 0; font-weight: 800;'>{prediction:.1f} days</h1>
+#                 <p style='font-size: 1.3rem; margin-top: 1rem; font-weight: 500;'>Predicted Length of Stay</p>
+#                 <p style='font-size: 1rem; opacity: 0.9;'>±{metadata['test_mae']:.2f} days confidence interval (95%)</p>
+#             </div>
+#             """, unsafe_allow_html=True)
+            
+#             col1, col2, col3 = st.columns(3)
+            
+#             with col1:
+#                 if prediction <= 3:
+#                     st.success("🟢 **Short Stay**\n\nLow resource intensity\nStandard discharge protocol")
+#                 elif prediction <= 7:
+#                     st.warning("🟡 **Medium Stay**\n\nStandard resources\nMonitor progress")
+#                 else:
+#                     st.error("🔴 **Long Stay**\n\nHigh resource needs\nEarly intervention required")
+            
+#             with col2:
+#                 comorbidity_count = sum([dialysisrenalendstage, asthma, irondef, pneum,
+#                                         substancedependence, psychologicaldisordermajor,
+#                                         depress, psychother, fibrosisandother, malnutrition, hemo])
+#                 st.metric("Comorbidities", f"{comorbidity_count} conditions")
+            
+#             with col3:
+#                 if rcount >= 2:
+#                     st.metric("Readmissions", rcount, delta="High risk", delta_color="inverse")
+#                 else:
+#                     st.metric("Readmissions", rcount, delta="Normal")
+            
+#             st.markdown("### 📋 Resource Planning Recommendations")
+            
+#             if prediction > 7:
+#                 st.error("""
+#                 **🔴 High-Intensity Care Protocol**
+                
+#                 ✓ Reserve extended-care bed immediately
+#                 ✓ Assign case manager within 24 hours
+#                 ✓ Order 10+ day medication supply
+#                 ✓ Initiate discharge planning on day 1
+#                 ✓ Schedule multi-specialty care coordination
+#                 ✓ Alert social services for post-discharge support
+#                 """)
+#             elif prediction > 4:
+#                 st.warning("""
+#                 **🟡 Standard Care Protocol**
+                
+#                 ✓ Standard acute care bed assignment
+#                 ✓ Regular nursing staff ratios
+#                 ✓ 7-day medication supply
+#                 ✓ Routine monitoring and assessments
+#                 ✓ Discharge planning by day 3
+#                 """)
+#             else:
+#                 st.success("""
+#                 **🟢 Short-Stay Fast-Track Protocol**
+                
+#                 ✓ Short-stay unit eligible
+#                 ✓ Standard staffing sufficient
+#                 ✓ Early discharge planning opportunity
+#                 ✓ Minimal supply requirements
+#                 ✓ Consider same-day discharge protocols
+#                 """)
+            
+#             st.markdown("### ⚠️ Clinical Risk Factors Identified")
+#             risks = []
+#             if rcount >= 2:
+#                 risks.append(f"🔴 **High readmission count ({rcount})** - Strong predictor of extended stay")
+#             if comorbidity_count >= 3:
+#                 risks.append(f"🔴 **Multiple comorbidities ({comorbidity_count})** - Complex care needs")
+#             if glucose > 140:
+#                 risks.append("🟡 **Elevated glucose ({:.0f} mg/dL)** - Diabetes management protocol recommended".format(glucose))
+#             if sodium < 135:
+#                 risks.append("🟡 **Hyponatremia ({:.0f} mEq/L)** - Monitor electrolytes closely".format(sodium))
+#             if creatinine > 1.3:
+#                 risks.append("🟡 **Elevated creatinine ({:.1f} mg/dL)** - Renal function monitoring required".format(creatinine))
+#             if bmi < 18.5:
+#                 risks.append("🟡 **Low BMI ({:.1f})** - Nutritional support recommended".format(bmi))
+#             elif bmi > 30:
+#                 risks.append("🟡 **Elevated BMI ({:.1f})** - Consider mobility support".format(bmi))
+            
+#             if risks:
+#                 for risk in risks:
+#                     st.warning(risk)
+#             else:
+#                 st.success("✅ **No major risk factors identified** - Standard protocols apply")
+            
+#             # No longer resetting sample patient flag since we removed the feature
+
+# # ============================================
+# # ABOUT PAGE - ENHANCED
+# # ============================================
+# else:
+#     st.title("📖 About OkoaMaisha")
+    
+#     col1, col2 = st.columns([2, 1])
+#     with col1:
+#         st.markdown("""
+#         ### What is OkoaMaisha?
+        
+#         **OkoaMaisha** (Swahili for "Save Lives") is an AI-powered clinical decision support system that predicts 
+#         hospital length of stay using advanced machine learning. It helps healthcare facilities optimize resource 
+#         allocation, improve bed management, and enhance patient care planning.
+        
+#         The system was designed specifically for resource-constrained healthcare settings where efficient 
+#         bed management can literally save lives by ensuring capacity for emergency admissions.
+#         """)
+    
+#     with col2:
+#         st.markdown("""
+#         <div class='capability-card' style='border-left-color: #10b981;'>
+#             <h4 style='color: #10b981;'>🌍 Built for Impact</h4>
+#             <p style='color: #475569;'>Designed for hospitals in low and middle-income countries where bed shortages 
+#             are a critical challenge.</p>
+#         </div>
+#         """, unsafe_allow_html=True)
+    
+#     st.markdown("---")
+    
+#     st.markdown("### 🔬 How It Works")
+    
+#     col1, col2 = st.columns(2)
+#     with col1:
+#         st.markdown("""
+#         <div class='capability-card'>
+#             <h4>📊 Data Processing</h4>
+#             <p style='color: #475569; line-height: 1.8;'>
+#             The system analyzes <strong>42 clinical features</strong> across four categories:
+#             </p>
+#             <ul style='color: #475569; line-height: 1.8;'>
+#                 <li><strong>Demographics:</strong> Age, gender, BMI</li>
+#                 <li><strong>Medical History:</strong> 11 comorbidity indicators</li>
+#                 <li><strong>Clinical Data:</strong> Vitals and lab results</li>
+#                 <li><strong>Admission Context:</strong> Facility, timing, secondary diagnoses</li>
+#             </ul>
+#         </div>
+#         """, unsafe_allow_html=True)
+    
+#     with col2:
+#         st.markdown("""
+#         <div class='capability-card' style='border-left-color: #8b5cf6;'>
+#             <h4 style='color: #8b5cf6;'>🤖 AI Model</h4>
+#             <p style='color: #475569; line-height: 1.8;'>
+#             We use a <strong>Gradient Boosting Regressor</strong>, chosen after comparing 4 algorithms:
+#             </p>
+#             <ul style='color: #475569; line-height: 1.8;'>
+#                 <li><strong>Gradient Boosting:</strong> Best performer (97.2% R²)</li>
+#                 <li><strong>XGBoost:</strong> Second best (97.0% R²)</li>
+#                 <li><strong>LightGBM:</strong> Fast alternative (96.9% R²)</li>
+#                 <li><strong>Random Forest:</strong> Baseline (93.4% R²)</li>
+#             </ul>
+#         </div>
+#         """, unsafe_allow_html=True)
+    
+#     st.markdown("### 📈 Model Performance")
+    
+#     col1, col2, col3, col4 = st.columns(4)
+#     with col1:
+#         st.markdown("""
+#         <div class='metric-card'>
+#             <h3>97.21%</h3>
+#             <p>R² Accuracy</p>
+#             <div class='subtext'>Explains 97% of variance</div>
+#         </div>
+#         """, unsafe_allow_html=True)
+#     with col2:
+#         st.markdown("""
+#         <div class='metric-card'>
+#             <h3>±0.31</h3>
+#             <p>Mean Error</p>
+#             <div class='subtext'>7.4 hours average</div>
+#         </div>
+#         """, unsafe_allow_html=True)
+#     with col3:
+#         st.markdown("""
+#         <div class='metric-card'>
+#             <h3>98%</h3>
+#             <p>Long-Stay Recall</p>
+#             <div class='subtext'>1,682 of 1,713 detected</div>
+#         </div>
+#         """, unsafe_allow_html=True)
+#     with col4:
+#         st.markdown("""
+#         <div class='metric-card'>
+#             <h3>100K</h3>
+#             <p>Training Data</p>
+#             <div class='subtext'>Validated patient records</div>
+#         </div>
+#         """, unsafe_allow_html=True)
+    
+#     st.markdown("### 🎯 Key Features & Benefits")
+    
+#     features_data = {
+#         'Feature': ['Real-time Predictions', 'Risk Stratification', 'Resource Planning', 'Clinical Validation', 'Multi-facility Support'],
+#         'Description': [
+#             'Instant length of stay estimates upon admission',
+#             'Identifies high-risk patients requiring intensive monitoring',
+#             'Actionable recommendations for bed, staff, and supply allocation',
+#             '98% accuracy for detecting extended stays (>7 days)',
+#             'Trained across 5 different healthcare facilities'
+#         ],
+#         'Impact': ['⚡ Immediate', '🎯 Preventive', '📊 Operational', '✅ Validated', '🌐 Scalable']
+#     }
+#     df_features = pd.DataFrame(features_data)
+    
+#     for _, row in df_features.iterrows():
+#         st.markdown(f"""
+#         <div class='info-tooltip'>
+#             <strong>{row['Impact']} {row['Feature']}:</strong> {row['Description']}
+#         </div>
+#         """, unsafe_allow_html=True)
+    
+#     st.markdown("### ⚠️ Important Disclaimers")
+    
+#     col1, col2 = st.columns(2)
+#     with col1:
+#         st.error("""
+#         **🚨 Clinical Decision Support Only**
+        
+#         This tool provides **decision support** and should **not replace clinical judgment**. 
+#         All predictions must be reviewed by qualified healthcare professionals.
+        
+#         - Not a diagnostic tool
+#         - Requires human oversight
+#         - Predictions are probabilistic
+#         - Should supplement, not replace, clinical assessment
+#         """)
+    
+#     with col2:
+#         st.warning("""
+#         **🔒 Privacy & Compliance**
+        
+#         This system is designed with **HIPAA compliance** principles:
+        
+#         - No patient data is stored permanently
+#         - All data should be handled per institutional policies
+#         - Secure data transmission required
+#         - Regular security audits recommended
+#         - Staff training on proper use essential
+#         """)
+    
+#     st.markdown("### 🔧 Technical Details")
+    
+#     col1, col2 = st.columns(2)
+#     with col1:
+#         st.markdown("""
+#         <div class='capability-card'>
+#             <h4>⚙️ Model Specifications</h4>
+#             <ul style='color: #475569; line-height: 1.8;'>
+#                 <li><strong>Algorithm:</strong> Gradient Boosting Regressor</li>
+#                 <li><strong>Features:</strong> 42 engineered clinical variables</li>
+#                 <li><strong>Training Set:</strong> 80,000 patients (80% split)</li>
+#                 <li><strong>Test Set:</strong> 20,000 patients (20% split)</li>
+#                 <li><strong>Version:</strong> 2.1</li>
+#             </ul>
+#         </div>
+#         """, unsafe_allow_html=True)
+    
+#     with col2:
+#         # Get training date properly
+#         try:
+#             training_date = metadata.get('training_date', 'N/A')[:10]
+#         except:
+#             training_date = "2024"
+        
+#         st.markdown(f"""
+#         <div class='capability-card' style='border-left-color: #8b5cf6;'>
+#             <h4 style='color: #8b5cf6;'>📅 Deployment Info</h4>
+#             <ul style='color: #475569; line-height: 1.8;'>
+#                 <li><strong>Last Updated:</strong> {training_date}</li>
+#                 <li><strong>Framework:</strong> Scikit-learn, Streamlit</li>
+#                 <li><strong>Deployment:</strong> Cloud-based web application</li>
+#                 <li><strong>Availability:</strong> 24/7 access</li>
+#                 <li><strong>Updates:</strong> Quarterly model retraining</li>
+#             </ul>
+#         </div>
+#         """, unsafe_allow_html=True)
+    
+#     st.markdown("### 🎓 Research & Development")
+    
+#     st.info("""
+#     **📚 Citation**
+    
+#     If you use OkoaMaisha in research, clinical studies, or publications, please cite:
+    
+#     > *OkoaMaisha: Machine Learning for Hospital Length of Stay Prediction in Resource-Constrained Settings (2025)*
+    
+#     For research collaborations or technical inquiries, please contact your healthcare IT administrator.
+#     """)
+    
+#     st.markdown("### 🚀 Future Development")
+    
+#     col1, col2, col3 = st.columns(3)
+#     with col1:
+#         st.markdown("""
+#         <div class='step-card'>
+#             <h4 style='color: #1e3a8a;'>📊 Planned Features</h4>
+#             <p style='color: #475569; font-size: 0.9rem;'>• Mortality risk prediction<br>
+#             • Readmission likelihood<br>
+#             • Cost estimation<br>
+#             • ICU transfer probability</p>
+#         </div>
+#         """, unsafe_allow_html=True)
+    
+#     with col2:
+#         st.markdown("""
+#         <div class='step-card'>
+#             <h4 style='color: #1e3a8a;'>🔬 Research Goals</h4>
+#             <p style='color: #475569; font-size: 0.9rem;'>• Expand to 500K patients<br>
+#             • Multi-country validation<br>
+#             • Real-time learning<br>
+#             • Integration with EHR systems</p>
+#         </div>
+#         """, unsafe_allow_html=True)
+    
+#     with col3:
+#         st.markdown("""
+#         <div class='step-card'>
+#             <h4 style='color: #1e3a8a;'>🌍 Impact Vision</h4>
+#             <p style='color: #475569; font-size: 0.9rem;'>• Save 10,000+ lives annually<br>
+#             • Optimize 1M+ bed-days<br>
+#             • Deploy across 50+ hospitals<br>
+#             • Open-source toolkit release</p>
+#         </div>
+#         """, unsafe_allow_html=True)
+    
+#     st.markdown("### 💬 Contact & Support")
+    
+#     st.markdown("""
+#     <div class='capability-card' style='border-left-color: #10b981;'>
+#         <h4 style='color: #10b981;'>🤝 Get Help</h4>
+#         <p style='color: #475569; line-height: 1.8;'>
+#         For questions, feedback, or technical support:
+#         </p>
+#         <ul style='color: #475569; line-height: 1.8;'>
+#             <li><strong>Clinical Questions:</strong> Contact your healthcare IT administrator</li>
+#             <li><strong>Technical Support:</strong> Submit ticket through your institution's help desk</li>
+#             <li><strong>Feature Requests:</strong> Provide feedback via your hospital's QI department</li>
+#             <li><strong>Training:</strong> Request staff training sessions through administration</li>
+#         </ul>
+#     </div>
+#     """, unsafe_allow_html=True)
+
+# # Footer
+# st.markdown("---")
+# st.markdown("""
+# <div style='text-align: center; color: #64748b; padding: 2rem;'>
+#     <p style='font-size: 1.1rem; font-weight: 600; color: #1e3a8a;'>OkoaMaisha - Hospital Resource Optimization System</p>
+#     <p style='font-size: 0.9rem; margin-top: 0.5rem;'>Clinical Decision Support Tool | Version 2.1 | Powered by AI</p>
+#     <p style='font-size: 0.8rem; margin-top: 1rem; color: #94a3b8;'>
+#         ⚠️ This tool is for clinical decision support only. 
+#         Final decisions must be made by qualified healthcare professionals.
+#     </p>
+#     <p style='font-size: 0.75rem; margin-top: 0.5rem; color: #cbd5e1;'>
+#         © 2025 OkoaMaisha Project | Designed for healthcare facilities worldwide
+#     </p>
+# </div>
+# """, unsafe_allow_html=True)
+
+# VERSION 12
+
 """
 OkoaMaisha: Clinical Length of Stay Predictor - Version 2.1
 Professional Streamlit Web Application - Enhanced Edition
@@ -5364,7 +6300,7 @@ else:
         ### What is OkoaMaisha?
         
         **OkoaMaisha** (Swahili for "Save Lives") is an AI-powered clinical decision support system that predicts 
-        hospital length of stay using advanced machine learning. It helps healthcare facilities optimize resource 
+        individual patient hospital length of stay using advanced machine learning. It helps healthcare facilities optimize resource 
         allocation, improve bed management, and enhance patient care planning.
         
         The system was designed specifically for resource-constrained healthcare settings where efficient 
