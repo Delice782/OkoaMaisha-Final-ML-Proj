@@ -6235,32 +6235,32 @@ elif page == "🔮 Predict":
                 st.error("""
                 **🔴 High-Intensity Care Protocol**
                 
-                ✓ Reserve extended-care bed immediately
-                ✓ Assign case manager within 24 hours
-                ✓ Order 10+ day medication supply
-                ✓ Initiate discharge planning on day 1
-                ✓ Schedule multi-specialty care coordination
-                ✓ Alert social services for post-discharge support
+                * ✓ Reserve extended-care bed immediately
+                * ✓ Assign case manager within 24 hours
+                * ✓ Order 10+ day medication supply
+                * ✓ Initiate discharge planning on day 1
+                * ✓ Schedule multi-specialty care coordination
+                * ✓ Alert social services for post-discharge support
                 """)
             elif prediction > 4:
                 st.warning("""
                 **🟡 Standard Care Protocol**
                 
-                ✓ Standard acute care bed assignment
-                ✓ Regular nursing staff ratios
-                ✓ 7-day medication supply
-                ✓ Routine monitoring and assessments
-                ✓ Discharge planning by day 3
+                * ✓ Standard acute care bed assignment
+                * ✓ Regular nursing staff ratios
+                * ✓ 7-day medication supply
+                * ✓ Routine monitoring and assessments
+                * ✓ Discharge planning by day 3
                 """)
             else:
                 st.success("""
                 **🟢 Short-Stay Fast-Track Protocol**
                 
-                ✓ Short-stay unit eligible
-                ✓ Standard staffing sufficient
-                ✓ Early discharge planning opportunity
-                ✓ Minimal supply requirements
-                ✓ Consider same-day discharge protocols
+                * ✓ Short-stay unit eligible
+                * ✓ Standard staffing sufficient
+                * ✓ Early discharge planning opportunity
+                * ✓ Minimal supply requirements
+                * ✓ Consider same-day discharge protocols
                 """)
             
             st.markdown("### ⚠️ Clinical Risk Factors Identified")
