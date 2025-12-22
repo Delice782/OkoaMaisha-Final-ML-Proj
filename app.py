@@ -31,40 +31,15 @@ st.markdown("""
 .block-container {
     padding-top: 2rem;
     padding-bottom: 2rem;
-    max-width: 1400px;
 }
 
-/* Hide/minimize white Streamlit containers */
+/* Hide white Streamlit containers */
 .element-container {
     background: transparent !important;
 }
 
 div[data-testid="stVerticalBlock"] > div {
     background: transparent !important;
-    gap: 0.5rem !important;
-}
-
-/* Fix Streamlit expander styling */
-.streamlit-expanderHeader {
-    background: transparent !important;
-    border: none !important;
-}
-
-.streamlit-expanderContent {
-    background: transparent !important;
-    border: none !important;
-    padding: 0 !important;
-}
-
-/* Make text visible everywhere */
-p, label, span, div {
-    color: #1e293b !important;
-}
-
-/* Specific fixes for form labels */
-.stSelectbox label, .stSlider label, .stNumberInput label, .stCheckbox label {
-    color: #1e293b !important;
-    font-weight: 600 !important;
 }
 
 /* Custom containers */
@@ -246,28 +221,6 @@ p, label, span, div {
 .stButton > button:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
-}
-
-/* Minimize white container heights */
-div[data-testid="column"] {
-    background: transparent !important;
-    padding: 0.25rem !important;
-}
-
-/* Fix info boxes */
-.stAlert {
-    padding: 0.75rem 1rem !important;
-    border-radius: 8px !important;
-}
-
-/* Reduce spacing in containers */
-.row-widget {
-    gap: 0.5rem !important;
-}
-
-/* Make caption text visible */
-.stCaptionContainer, small {
-    color: #64748b !important;
 }
 
 #MainMenu {visibility: hidden;} 
