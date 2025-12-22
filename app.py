@@ -185,6 +185,11 @@ div[data-testid="stVerticalBlock"] > div {
     margin-top: 1rem;
     border: 2px solid #3b82f6;
     font-weight: 600;
+    color: #1e3a8a !important;
+}
+
+.progress-indicator strong {
+    color: #1e3a8a !important;
 }
 
 .capability-card {
