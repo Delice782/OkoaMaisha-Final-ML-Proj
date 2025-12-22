@@ -412,7 +412,7 @@ if page == "🔮 Predict LoS":
         st.markdown("</div>", unsafe_allow_html=True)
     
     with st.expander("💉 Vital Signs & Laboratory Results", expanded=True):
-        st.markdown("<div class='form-section'>", unsafe_allow_html=True)
+        # st.markdown("<div class='form-section'>", unsafe_allow_html=True)
         
         col1, col2 = st.columns(2)
         with col1:
