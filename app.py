@@ -1023,7 +1023,6 @@ else:  # Documentation
                 <li><strong>Features:</strong> 42 engineered clinical variables</li>
                 <li><strong>Training Set:</strong> 80,000 patients (80% split)</li>
                 <li><strong>Test Set:</strong> 20,000 patients (20% split)</li>
-                <li><strong>Version:</strong> 3.0</li>
             </ul>
         </div>
         """, unsafe_allow_html=True)
