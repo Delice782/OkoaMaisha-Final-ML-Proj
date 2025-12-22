@@ -371,7 +371,7 @@ if page == "🔮 Predict LoS":
         st.markdown("</div>", unsafe_allow_html=True)
         
     with st.expander("🩺 Medical History & Comorbidities", expanded=True):
-        st.markdown("<div class='form-section'>", unsafe_allow_html=True)
+        # st.markdown("<div class='form-section'>", unsafe_allow_html=True)
         st.caption("Select all conditions that apply to this patient:")
         
         col1, col2, col3 = st.columns(3)
