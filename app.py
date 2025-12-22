@@ -354,20 +354,22 @@ if page == "🔮 Predict LoS":
     
     # Form sections with visual organization
     st.markdown("<div class='form-section'>", unsafe_allow_html=True)
-    st.markdown("### 👤 Patient Demographics")
+
+    with st.expander("👤 **Patient Demographics**", expanded=True):
+    st.markdown("<div class='form-section'>", unsafe_allow_html=True)
     
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        gender = st.selectbox("Gender", ["Female", "Male"], help="Patient's biological sex")
-        gender_encoded = 1 if gender == "Male" else 0
-    with col2:
-        rcount = st.slider("Readmissions (past 180d)", 0, 5, 0, 
-                          help="Number of hospital readmissions in past 6 months")
-    with col3:
-        bmi = st.number_input("BMI", 10.0, 60.0, 25.0, 0.1,
-                             help="Body Mass Index (kg/m²)")
-    st.markdown("</div>", unsafe_allow_html=True)
-    
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            gender = st.selectbox("Gender", ["Female", "Male"], help="Patient's biological sex")
+            gender_encoded = 1 if gender == "Male" else 0
+        with col2:
+            rcount = st.slider("Readmissions (past 180d)", 0, 5, 0, 
+                              help="Number of hospital readmissions in past 6 months")
+        with col3:
+            bmi = st.number_input("BMI", 10.0, 60.0, 25.0, 0.1,
+                                 help="Body Mass Index (kg/m²)")
+        st.markdown("</div>", unsafe_allow_html=True)
+        
     st.markdown("<div class='form-section'>", unsafe_allow_html=True)
     st.markdown("### 🩺 Medical History & Comorbidities")
     st.caption("Select all conditions that apply to this patient:")
