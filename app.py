@@ -370,46 +370,46 @@ if page == "🔮 Predict LoS":
                                  help="Body Mass Index (kg/m²)")
         st.markdown("</div>", unsafe_allow_html=True)
         
-    st.markdown("<div class='form-section'>", unsafe_allow_html=True)
-    st.markdown("### 🩺 Medical History & Comorbidities")
-    st.caption("Select all conditions that apply to this patient:")
-    
-    col1, col2, col3 = st.columns(3)
-    
-    with col1:
-        st.markdown("**Chronic Conditions**")
-        dialysisrenalendstage = st.checkbox("🔴 Dialysis/End-Stage Renal")
-        hemo = st.checkbox("🔴 Hemoglobin Disorder")
-        asthma = st.checkbox("🟡 Asthma")
-        pneum = st.checkbox("🟡 Pneumonia")
-    
-    with col2:
-        st.markdown("**Nutritional & Metabolic**")
-        irondef = st.checkbox("🟡 Iron Deficiency")
-        malnutrition = st.checkbox("🔴 Malnutrition")
-        fibrosisandother = st.checkbox("🟡 Fibrosis & Other")
-    
-    with col3:
-        st.markdown("**Mental Health**")
-        psychologicaldisordermajor = st.checkbox("🟡 Major Psych Disorder")
-        depress = st.checkbox("🟡 Depression")
-        psychother = st.checkbox("🟡 Other Psychiatric")
-        substancedependence = st.checkbox("🔴 Substance Dependence")
-    
-    # Show comorbidity count
-    comorbidity_count = sum([dialysisrenalendstage, asthma, irondef, pneum,
-                            substancedependence, psychologicaldisordermajor,
-                            depress, psychother, fibrosisandother, malnutrition, hemo])
-    
-    if comorbidity_count > 0:
-        st.markdown(f"""
-        <div class='progress-indicator'>
-            <strong>📊 Comorbidity Summary:</strong> {comorbidity_count} condition(s) selected
-            {' • 🔴 High complexity case' if comorbidity_count >= 3 else ' • 🟢 Standard complexity'}
-        </div>
-        """, unsafe_allow_html=True)
-    
-    st.markdown("</div>", unsafe_allow_html=True)
+    with st.expander("🩺 Medical History & Comorbidities", expanded=True):
+        st.markdown("<div class='form-section'>", unsafe_allow_html=True)
+        st.caption("Select all conditions that apply to this patient:")
+        
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            st.markdown("**Chronic Conditions**")
+            dialysisrenalendstage = st.checkbox("🔴 Dialysis/End-Stage Renal")
+            hemo = st.checkbox("🔴 Hemoglobin Disorder")
+            asthma = st.checkbox("🟡 Asthma")
+            pneum = st.checkbox("🟡 Pneumonia")
+        
+        with col2:
+            st.markdown("**Nutritional & Metabolic**")
+            irondef = st.checkbox("🟡 Iron Deficiency")
+            malnutrition = st.checkbox("🔴 Malnutrition")
+            fibrosisandother = st.checkbox("🟡 Fibrosis & Other")
+        
+        with col3:
+            st.markdown("**Mental Health**")
+            psychologicaldisordermajor = st.checkbox("🟡 Major Psych Disorder")
+            depress = st.checkbox("🟡 Depression")
+            psychother = st.checkbox("🟡 Other Psychiatric")
+            substancedependence = st.checkbox("🔴 Substance Dependence")
+        
+        # Show comorbidity count
+        comorbidity_count = sum([dialysisrenalendstage, asthma, irondef, pneum,
+                                substancedependence, psychologicaldisordermajor,
+                                depress, psychother, fibrosisandother, malnutrition, hemo])
+        
+        if comorbidity_count > 0:
+            st.markdown(f"""
+            <div class='progress-indicator'>
+                <strong>📊 Comorbidity Summary:</strong> {comorbidity_count} condition(s) selected
+                {' • 🔴 High complexity case' if comorbidity_count >= 3 else ' • 🟢 Standard complexity'}
+            </div>
+            """, unsafe_allow_html=True)
+        
+        st.markdown("</div>", unsafe_allow_html=True)
     
     with st.expander("💉 Vital Signs & Laboratory Results", expanded=True):
         st.markdown("<div class='form-section'>", unsafe_allow_html=True)
