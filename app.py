@@ -1041,7 +1041,6 @@ else:  # Documentation
                 <li><strong>Framework:</strong> Scikit-learn, Streamlit</li>
                 <li><strong>Deployment:</strong> Cloud-based web application</li>
                 <li><strong>Availability:</strong> 24/7 access</li>
-                <li><strong>Updates:</strong> Quarterly model retraining</li>
             </ul>
         </div>
         """, unsafe_allow_html=True)
