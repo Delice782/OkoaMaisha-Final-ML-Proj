@@ -465,7 +465,7 @@ if page == "🔮 Predict LoS":
         
     with st.expander("🏥 Admission Information", expanded=True):
 
-        st.markdown("<div class='form-section'>", unsafe_allow_html=True)
+        # st.markdown("<div class='form-section'>", unsafe_allow_html=True)
 
         
         col1, col2, col3, col4 = st.columns(4)
