@@ -463,27 +463,29 @@ if page == "🔮 Predict LoS":
     
     st.markdown("</div>", unsafe_allow_html=True)
     
-    st.markdown("<div class='form-section'>", unsafe_allow_html=True)
-    st.markdown("### 🏥 Admission Information")
-    
-    col1, col2, col3, col4 = st.columns(4)
-    with col1:
-        facility = st.selectbox("Facility", ["A", "B", "C", "D", "E"],
-                               help="Healthcare facility code")
-    with col2:
-        admission_month = st.selectbox("Admission Month", list(range(1, 13)))
-    with col3:
-        admission_dayofweek_str = st.selectbox("Day of Week", 
-                                               ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"])
-        day_map = {"Mon": 0, "Tue": 1, "Wed": 2, "Thu": 3, "Fri": 4, "Sat": 5, "Sun": 6}
-        admission_dayofweek = day_map[admission_dayofweek_str]
-    with col4:
-        secondarydiagnosisnonicd9 = st.slider("Secondary Diagnoses", 0, 10, 1,
-                                              help="Number of additional diagnoses")
-    
-    admission_quarter = (admission_month - 1) // 3 + 1
-    
-    st.markdown("</div>", unsafe_allow_html=True)
+    with st.expander("🏥 Admission Information", expanded=True):
+
+        st.markdown("<div class='form-section'>", unsafe_allow_html=True)
+
+        
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            facility = st.selectbox("Facility", ["A", "B", "C", "D", "E"],
+                                   help="Healthcare facility code")
+        with col2:
+            admission_month = st.selectbox("Admission Month", list(range(1, 13)))
+        with col3:
+            admission_dayofweek_str = st.selectbox("Day of Week", 
+                                                   ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"])
+            day_map = {"Mon": 0, "Tue": 1, "Wed": 2, "Thu": 3, "Fri": 4, "Sat": 5, "Sun": 6}
+            admission_dayofweek = day_map[admission_dayofweek_str]
+        with col4:
+            secondarydiagnosisnonicd9 = st.slider("Secondary Diagnoses", 0, 10, 1,
+                                                  help="Number of additional diagnoses")
+        
+        admission_quarter = (admission_month - 1) // 3 + 1
+        
+        st.markdown("</div>", unsafe_allow_html=True)
     
     # Prominent prediction button
     st.markdown("<br>", unsafe_allow_html=True)
