@@ -353,7 +353,7 @@ if page == "🔮 Predict LoS":
         st.session_state.form_progress = 0
     
     # Form sections with visual organization
-    # st.markdown("<div class='form-section'>", unsafe_allow_html=True)
+    st.markdown("<div class='form-section'>", unsafe_allow_html=True)
 
     with st.expander("👤 **Patient Demographics**", expanded=True):
         st.markdown("<div class='form-section'>", unsafe_allow_html=True)
