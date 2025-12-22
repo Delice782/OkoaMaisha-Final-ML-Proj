@@ -42,37 +42,6 @@ div[data-testid="stVerticalBlock"] > div {
     background: transparent !important;
 }
 
-/* Remove white boxes inside expanders */
-.streamlit-expanderHeader {
-    background: transparent !important;
-    border: none !important;
-}
-
-.streamlit-expanderContent {
-    background: transparent !important;
-    border: none !important;
-    padding: 0 !important;
-}
-
-div[data-testid="stExpander"] {
-    background: transparent !important;
-    border: none !important;
-}
-
-div[data-testid="stExpander"] > div {
-    background: transparent !important;
-}
-
-/* Remove white boxes from all nested containers */
-div[data-testid="column"] {
-    background: transparent !important;
-    padding: 0.25rem !important;
-}
-
-div[data-testid="stVerticalBlock"] > div:has(div[data-testid="stExpander"]) {
-    background: transparent !important;
-}
-
 /* Custom containers */
 .compact-header {
     background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #06b6d4 100%);
