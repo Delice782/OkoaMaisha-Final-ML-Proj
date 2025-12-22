@@ -411,58 +411,58 @@ if page == "🔮 Predict LoS":
     
     st.markdown("</div>", unsafe_allow_html=True)
     
-    st.markdown("<div class='form-section'>", unsafe_allow_html=True)
-    st.markdown("### 💉 Vital Signs & Laboratory Results")
-    
-    col1, col2 = st.columns(2)
-    with col1:
-        st.markdown("**Vital Signs**")
-        pulse = st.number_input("Pulse (bpm)", 30, 200, 75,
-                               help="Heart rate in beats per minute")
-        respiration = st.number_input("Respiration (/min)", 5.0, 60.0, 16.0,
-                                     help="Respiratory rate per minute")
+    with st.expander("💉 Vital Signs & Laboratory Results", expanded=True):
+        st.markdown("<div class='form-section'>", unsafe_allow_html=True)
         
-        # Visual feedback for vitals
-        if pulse < 60 or pulse > 100:
-            st.warning(f"⚠️ Abnormal pulse: {pulse} bpm")
-        if respiration < 12 or respiration > 20:
-            st.warning(f"⚠️ Abnormal respiration: {respiration}/min")
-    
-    with col2:
-        st.markdown("**Hematology**")
-        hematocrit = st.number_input("Hematocrit (%)", 20.0, 60.0, 40.0,
-                                    help="Percentage of red blood cells")
-        neutrophils = st.number_input("Neutrophils (×10³/µL)", 0.0, 20.0, 4.0,
-                                     help="Neutrophil count")
+        col1, col2 = st.columns(2)
+        with col1:
+            st.markdown("**Vital Signs**")
+            pulse = st.number_input("Pulse (bpm)", 30, 200, 75,
+                                   help="Heart rate in beats per minute")
+            respiration = st.number_input("Respiration (/min)", 5.0, 60.0, 16.0,
+                                         help="Respiratory rate per minute")
+            
+            # Visual feedback for vitals
+            if pulse < 60 or pulse > 100:
+                st.warning(f"⚠️ Abnormal pulse: {pulse} bpm")
+            if respiration < 12 or respiration > 20:
+                st.warning(f"⚠️ Abnormal respiration: {respiration}/min")
         
-        if hematocrit < 35 or hematocrit > 50:
-            st.warning(f"⚠️ Abnormal hematocrit: {hematocrit}%")
-    
-    st.markdown("**Chemistry Panel**")
-    col3, col4, col5, col6 = st.columns(4)
-    
-    with col3:
-        glucose = st.number_input("Glucose (mg/dL)", 50.0, 400.0, 100.0)
-        if glucose > 140:
-            st.caption("🔴 Elevated")
-    
-    with col4:
-        sodium = st.number_input("Sodium (mEq/L)", 120.0, 160.0, 140.0)
-        if sodium < 135:
-            st.caption("🔴 Low")
-    
-    with col5:
-        creatinine = st.number_input("Creatinine (mg/dL)", 0.3, 10.0, 1.0)
-        if creatinine > 1.3:
-            st.caption("🔴 Elevated")
-    
-    with col6:
-        bloodureanitro = st.number_input("BUN (mg/dL)", 5.0, 100.0, 12.0)
-        if bloodureanitro > 20:
-            st.caption("🟡 Elevated")
-    
-    st.markdown("</div>", unsafe_allow_html=True)
-    
+        with col2:
+            st.markdown("**Hematology**")
+            hematocrit = st.number_input("Hematocrit (%)", 20.0, 60.0, 40.0,
+                                        help="Percentage of red blood cells")
+            neutrophils = st.number_input("Neutrophils (×10³/µL)", 0.0, 20.0, 4.0,
+                                         help="Neutrophil count")
+            
+            if hematocrit < 35 or hematocrit > 50:
+                st.warning(f"⚠️ Abnormal hematocrit: {hematocrit}%")
+        
+        st.markdown("**Chemistry Panel**")
+        col3, col4, col5, col6 = st.columns(4)
+        
+        with col3:
+            glucose = st.number_input("Glucose (mg/dL)", 50.0, 400.0, 100.0)
+            if glucose > 140:
+                st.caption("🔴 Elevated")
+        
+        with col4:
+            sodium = st.number_input("Sodium (mEq/L)", 120.0, 160.0, 140.0)
+            if sodium < 135:
+                st.caption("🔴 Low")
+        
+        with col5:
+            creatinine = st.number_input("Creatinine (mg/dL)", 0.3, 10.0, 1.0)
+            if creatinine > 1.3:
+                st.caption("🔴 Elevated")
+        
+        with col6:
+            bloodureanitro = st.number_input("BUN (mg/dL)", 5.0, 100.0, 12.0)
+            if bloodureanitro > 20:
+                st.caption("🟡 Elevated")
+        
+        st.markdown("</div>", unsafe_allow_html=True)
+        
     with st.expander("🏥 Admission Information", expanded=True):
 
         st.markdown("<div class='form-section'>", unsafe_allow_html=True)
