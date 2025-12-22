@@ -341,7 +341,7 @@ if page == "🔮 Predict LoS":
                 <div class='stat-label'>Long-Stay Recall</div>
             </div>
             <div class='stat-item'>
-                <div class='stat-value'>&lt;1s</div>
+                <div class='stat-value'>&lt;1second</div>
                 <div class='stat-label'>Prediction Time</div>
             </div>
         </div>
