@@ -1046,23 +1046,6 @@ else:  # Documentation
             </ul>
         </div>
         """, unsafe_allow_html=True)
-    
-    st.markdown("### 💬 Contact & Support")
-    
-    st.markdown("""
-    <div class='capability-card' style='border-left-color: #10b981;'>
-        <h4 style='color: #10b981;'>🤝 Get Help</h4>
-        <p style='color: #475569; line-height: 1.8;'>
-        For questions, feedback, or technical support:
-        </p>
-        <ul style='color: #475569; line-height: 1.8;'>
-            <li><strong>Clinical Questions:</strong> Contact your healthcare IT administrator</li>
-            <li><strong>Technical Support:</strong> Submit ticket through your institution's help desk</li>
-            <li><strong>Feature Requests:</strong> Provide feedback via your hospital's QI department</li>
-            <li><strong>Training:</strong> Request staff training sessions through administration</li>
-        </ul>
-    </div>
-    """, unsafe_allow_html=True)
 
 # Footer
 st.markdown("---")
