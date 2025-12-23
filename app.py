@@ -2035,7 +2035,7 @@ else:  # Dataset Info
         <div class='metric-card'>
             <h3 style='color: #3b82f6; font-size: 2rem;'>1-30+</h3>
             <p style='font-weight: 600;'>Days Range</p>
-            <div style='font-size: 0.85rem; color: #64748b;'>Length of stay</div>
+            <div style='font-size: 0.85rem; color: #64748b;'>Length of stay (Days)</div>
         </div>
         """, unsafe_allow_html=True)
     
