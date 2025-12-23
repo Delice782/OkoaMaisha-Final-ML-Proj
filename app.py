@@ -670,8 +670,8 @@ if page == "🔮 Predict LoS":
                     use_container_width=True
                 )
             
-            with col3:
-                st.button("📊 View Dashboard", use_container_width=True)
+            # with col3:
+            #     st.button("📊 View Dashboard", use_container_width=True)
 
 # ============================================
 # PERFORMANCE PAGE
