@@ -2068,7 +2068,7 @@ else:  # Dataset Info
             <h4 style='color: #10b981;'>🔗 Resources</h4>
             <p style='color: #475569; line-height: 2;'>
                 <strong>Official Documentation:</strong><br>
-                <a href='https://microsoft.github.io/r-server-hospital-length-of-stay/' target='_blank' style='color: #3b82f6;'>
+                <a href='https://microsoft.github.io/r-server-hospital-length-of-stay/input_data.html' target='_blank' style='color: #3b82f6;'>
                     Microsoft ML Docs
                 </a>
             </p>
